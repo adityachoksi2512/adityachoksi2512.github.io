@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Aditya Choksi, AI Engineer in Atlanta. Twelve agents know his work. Ask them anything.">
+<meta property="og:title" content="Who Is Aditya? Ask the 12 agents.">
+<meta property="og:description" content="AI Engineer building RAG, agents and production ML. Ask the crew anything about his work.">
+<meta property="og:type" content="profile">
+<meta name="theme-color" content="#ECEFF6">
+<title>Who Is Aditya?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a riso-printed "agent floor". Status strip, misregistered headline, chat log beside a 12-face crew grid, then exhibits and a short resume. */
+:root{
+  --paper:#ECEFF6; --card:#FFFFFF; --ink:#1B2140; --muted:#5A6283; --line:#CDD3E3;
+  --pink:#FF3D8B; --blue:#2F55F0; --yellow:#FFCF3A; --mint:#2FD08E; --orange:#FF7A2E; --lilac:#9B7BFF;
+  --eye:#FFFFFF; --pupil:#141833; --on-accent:#FFFFFF;
+  --f-display:"Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --f-body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#11142A; --card:#1A1E3A; --ink:#E9EBF7; --muted:#9CA3C6; --line:#2C3260;
+    --pink:#FF5C9E; --blue:#6E8BFF; --yellow:#FFD55A; --mint:#3FE0A0; --orange:#FF8D4A; --lilac:#AC92FF;
+    --on-accent:#11142A; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#11142A; --card:#1A1E3A; --ink:#E9EBF7; --muted:#9CA3C6; --line:#2C3260;
+  --pink:#FF5C9E; --blue:#6E8BFF; --yellow:#FFD55A; --mint:#3FE0A0; --orange:#FF8D4A; --lilac:#AC92FF;
+  --on-accent:#11142A; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;
+  background-image:radial-gradient(color-mix(in srgb,var(--ink) 9%,transparent) 1px,transparent 1.2px);background-size:18px 18px}
+.wrap{max-width:1140px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:inherit}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.sr{position:absolute;left:-9999px}
+
+/* status strip */
+.status{display:flex;flex-wrap:wrap;gap:8px 22px;padding-block:14px;font-family:var(--f-mono);font-size:12.5px;color:var(--muted);border-bottom:1.5px dashed var(--line)}
+.status b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums;margin-right:4px}
+.status .live::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mint);margin-right:7px;vertical-align:1px;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.25}}
+
+/* hero */
+.hero{padding-block:40px 18px;display:grid;gap:14px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(52px,12.5vw,148px);line-height:.86;letter-spacing:-.035em;margin:0;color:var(--blue);
+  text-shadow:.045em .035em 0 var(--pink);text-wrap:balance}
+h1 .q{display:inline-block;transform-origin:50% 90%;animation:wobble 3.2s ease-in-out infinite}
+@keyframes wobble{0%,70%,100%{transform:rotate(0)}78%{transform:rotate(14deg)}86%{transform:rotate(-9deg)}92%{transform:rotate(4deg)}}
+.lede{font-size:clamp(18px,2.4vw,23px);max-width:38ch;margin:6px 0 0;font-weight:500}
+.lede em{font-style:normal;background:var(--yellow);color:#1B2140;padding:0 .2em;border-radius:3px}
+
+/* floor */
+.floor{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px;padding-block:18px 40px;align-items:start}
+@media (max-width:860px){.floor{grid-template-columns:1fr}}
+.console{display:grid;gap:12px;min-width:0}
+.ask{display:flex;gap:8px;background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:6px;box-shadow:5px 5px 0 var(--pink)}
+.ask input{flex:1;min-width:0;border:0;background:transparent;padding:10px 10px;font-size:16px;outline:none}
+.ask button{border:0;border-radius:9px;background:var(--blue);color:var(--on-accent);font-weight:600;padding:10px 16px;cursor:pointer;white-space:nowrap}
+.ask button:disabled{opacity:.5;cursor:wait}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:5px 12px;font-size:13.5px;cursor:pointer;transition:transform .12s,border-color .12s}
+.chip:hover{border-color:var(--ink);transform:translateY(-1px) rotate(-1deg)}
+.chip.tour{background:var(--yellow);color:#1B2140;border-color:#1B2140;font-weight:600}
+
+.log{background:var(--card);border:1.5px solid var(--line);border-radius:14px;height:440px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+.msg{display:flex;gap:10px;align-items:flex-start;min-width:0}
+.msg .mini{flex:none;width:30px;height:30px;border-radius:9px;border:1.5px solid var(--ink);position:relative}
+.msg .body{min-width:0}
+.msg .who{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);margin-bottom:2px}
+.msg .text{font-size:15px;overflow-wrap:anywhere}
+.msg.user{justify-content:flex-end}
+.msg.user .text{background:var(--ink);color:var(--paper);padding:8px 13px;border-radius:14px 14px 3px 14px;max-width:85%}
+.route{font-family:var(--f-mono);font-size:12px;color:var(--muted);padding-left:40px}
+.route span{color:var(--blue)}
+.stamp{align-self:flex-start;margin-left:40px;font-family:var(--f-mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--pink);border:1.5px solid var(--pink);border-radius:5px;padding:3px 8px;transform:rotate(-2deg)}
+.stamp.pop{animation:stampin .35s cubic-bezier(.3,1.6,.5,1)}
+@keyframes stampin{from{transform:scale(1.8) rotate(-8deg);opacity:0}}
+.dots{display:inline-flex;gap:4px}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:bob 1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes bob{50%{transform:translateY(-4px)}}
+.check{margin-left:40px;border:2px dashed var(--orange);border-radius:12px;padding:12px;display:grid;gap:8px}
+.check p{margin:0;font-size:14.5px}
+.check .row{display:flex;flex-wrap:wrap;gap:6px}
+
+/* crew */
+.crewhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
+.crewhead h2{font-family:var(--f-display);font-size:26px;margin:0;letter-spacing:-.02em}
+.crewhead span{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.crew{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.agent{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 10px 11px;text-align:left;cursor:pointer;display:grid;gap:6px;transition:transform .15s,border-color .15s,box-shadow .15s;min-width:0}
+.agent:hover{transform:translateY(-3px) rotate(-.6deg);border-color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.agent.active{border-color:var(--ink);box-shadow:3px 3px 0 var(--blue)}
+.agent .nm{font-weight:600;font-size:14.5px;line-height:1.2}
+.agent .rl{font-family:var(--f-mono);font-size:11px;color:var(--muted);line-height:1.3}
+.agent .qk{font-size:12.5px;color:var(--muted);line-height:1.35}
+.agent .st{font-family:var(--f-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.agent.active .st{color:var(--blue)}
+@media (max-width:520px){.agent .qk{display:none}.agent{padding:10px 8px}}
+
+.face{position:relative;width:52px;height:46px;border:2px solid var(--ink);box-shadow:3px 3px 0 color-mix(in srgb,var(--pink) 70%,transparent)}
+.face.s0{border-radius:50% 46% 42% 54%/55% 50% 50% 45%}.face.s1{border-radius:14px}.face.s2{border-radius:50% 50% 14px 14px}
+.face.s3{border-radius:44% 56% 52% 48%/40% 44% 56% 60%}
+.eyes{position:absolute;top:13px;left:0;right:0;display:flex;justify-content:center;gap:7px}
+.eye{width:13px;height:13px;border-radius:50%;background:var(--eye);border:1.5px solid var(--pupil);display:grid;place-items:center;animation:blink 5s infinite;animation-delay:var(--bd,0s)}
+.pupil{width:5.5px;height:5.5px;border-radius:50%;background:var(--pupil);transition:transform .08s linear}
+@keyframes blink{0%,95%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+.mouth{position:absolute;bottom:8px;left:50%;width:12px;height:3px;margin-left:-6px;border-radius:3px;background:var(--pupil)}
+.talking .mouth{animation:talk .22s infinite alternate}
+@keyframes talk{to{height:7px;border-radius:50%}}
+.talking .face{animation:hop .5s infinite}
+@keyframes hop{50%{transform:translateY(-3px)}}
+.msg .mini .eyes{top:7px;gap:3px}.msg .mini .eye{width:8px;height:8px;border-width:1px}.msg .mini .pupil{width:3.5px;height:3.5px}
+.msg .mini .mouth{bottom:5px;width:7px;margin-left:-3.5px;height:2px}
+
+/* sections */
+section.block{padding-block:44px;border-top:1.5px dashed var(--line)}
+.sh{display:grid;gap:6px;margin-bottom:22px}
+.sh h2{font-family:var(--f-display);font-weight:800;font-size:clamp(30px,5vw,48px);line-height:1;letter-spacing:-.03em;margin:0;text-wrap:balance}
+.sh p{margin:0;color:var(--muted);max-width:60ch}
+
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-family:var(--f-mono);font-size:13px}
+.flow .node{background:var(--card);border:1.5px solid var(--ink);border-radius:10px;padding:8px 12px}
+.flow .node.hot{background:var(--blue);color:var(--on-accent);border-color:var(--blue)}
+.flow .node.crit{background:var(--pink);color:var(--on-accent);border-color:var(--pink)}
+.flow .arr{color:var(--muted)}
+
+.exhibits{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.ex{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:18px;display:grid;gap:10px;align-content:start;min-width:0}
+.ex .tag{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.ex h3{font-family:var(--f-display);font-size:22px;line-height:1.1;margin:0;letter-spacing:-.02em}
+.ex p{margin:0;font-size:14.5px}
+.stack{display:flex;flex-wrap:wrap;gap:5px}
+.stack span{font-family:var(--f-mono);font-size:11px;border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--muted)}
+.ex .askbtn{justify-self:start;border:1.5px solid var(--ink);background:transparent;border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600;cursor:pointer}
+.ex .askbtn:hover{background:var(--ink);color:var(--paper)}
+.ex.feat{background:var(--yellow);color:#1B2140;border-color:#1B2140}
+.ex.feat .tag,.ex.feat .stack span{color:#1B2140;border-color:#1B2140}
+.ex.feat .askbtn{border-color:#1B2140;color:#1B2140}
+.ex.feat .askbtn:hover{background:#1B2140;color:#FFCF3A}
+
+.cv{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:28px 32px}
+.cv h3{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:500}
+.cv ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.cv li{display:grid;gap:1px;padding-left:14px;border-left:3px solid var(--line)}
+.cv li.now{border-left-color:var(--mint)}
+.cv li b{font-weight:600;line-height:1.3}
+.cv li span{font-size:14px;color:var(--muted)}
+.cv li .when{font-family:var(--f-mono);font-size:12px;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;font-family:var(--f-mono);font-size:10.5px;background:var(--mint);color:#11142A;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:2px;text-transform:uppercase}
+
+.ticker{overflow:hidden;border-block:2px solid var(--ink);background:var(--ink);color:var(--paper);font-family:var(--f-mono);font-size:13px;white-space:nowrap}
+.ticker .track{display:inline-flex;gap:28px;padding-block:9px;animation:scroll 42s linear infinite}
+.ticker .track span::after{content:"✳";margin-left:28px;color:var(--yellow)}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+footer{padding-block:40px 56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;font-size:14.5px;border-top:1.5px dashed var(--line)}
+footer h4{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:500}
+footer p{margin:0}
+.bigq{font-family:var(--f-display);font-weight:800;font-size:clamp(28px,4.5vw,40px);line-height:1.02;letter-spacing:-.03em;grid-column:1/-1;margin-bottom:6px}
+.bigq button{font:inherit;background:none;border:0;padding:0;color:var(--pink);text-decoration:underline wavy;text-underline-offset:6px;cursor:pointer}
+.mail{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.mail code{font-family:var(--f-mono);font-size:14px;user-select:all;overflow-wrap:anywhere}
+.copy{border:1.5px solid var(--ink);background:transparent;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:600;cursor:pointer}
+.copy:hover{background:var(--ink);color:var(--paper)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+<style>html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="status" aria-label="Site status">
+    <div class="live"><b>12</b>agents online</div>
+    <div><b id="s-time">0:00</b>since you arrived</div>
+    <div><b id="s-q">1</b>answered for you</div>
+    <div><b>0</b>tokens burned (it's all if-statements)</div>
+  </div>
+
+  <header class="hero">
+    <div class="eyebrow">Aditya Choksi · AI Engineer at TCS · Atlanta, GA</div>
+    <h1>WHO IS ADITYA<span class="q">?</span></h1>
+    <p class="lede">I build <em>AI that acts</em>: RAG, agents and ML that hold up inside real enterprises. Twelve agents on this page know my work. Go on, ask them.</p>
+  </header>
+
+  <div class="floor">
+    <div class="console">
+      <form class="ask" id="askform" autocomplete="off">
+        <label for="q" class="sr">Ask the crew</label>
+        <input id="q" name="q" placeholder="Ask the crew anything about Aditya…" maxlength="160">
+        <button id="askbtn" type="submit">Ask ↵</button>
+      </form>
+      <div class="chips" id="chips">
+        <button class="chip tour" type="button" data-tour>Take the tour</button>
+        <button class="chip" type="button">What does he do at TCS?</button>
+        <button class="chip" type="button">Show me the agent stuff</button>
+        <button class="chip" type="button">Tell me about the book</button>
+        <button class="chip" type="button">Any research or papers?</button>
+        <button class="chip" type="button">Weirdest side project?</button>
+        <button class="chip" type="button">Is this site using an LLM?</button>
+      </div>
+      <div class="log" id="log" aria-live="polite"></div>
+    </div>
+
+    <div>
+      <div class="crewhead"><h2>Who's here</h2><span>tap one to ask it</span></div>
+      <div class="crew" id="crew"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ticker" aria-hidden="true"><div class="track" id="track"></div></div>
+
+<div class="wrap">
+  <section class="block">
+    <div class="sh">
+      <div class="eyebrow">How it works</div>
+      <h2>A multi-agent system, minus the bill.</h2>
+      <p>Your question goes to Dispatch, which picks the specialists who know that part of my work. They answer from my résumé and notes, and The Critic stamps every reply before you see it. No model is called, so nobody here can make things up.</p>
+    </div>
+    <div class="flow">
+      <span class="node">you</span><span class="arr">→</span>
+      <span class="node hot">Dispatch</span><span class="arr">→</span>
+      <span class="node">10 specialists</span><span class="arr">→</span>
+      <span class="node crit">The Critic</span><span class="arr">→</span>
+      <span class="node">you, informed</span>
+    </div>
+  </section>
+
+  <section class="block" id="work">
+    <div class="sh">
+      <div class="eyebrow">Exhibit hall</div>
+      <h2>Things I've built.</h2>
+      <p>Agents, screeners, a chatty waiter, and one small civilization. Every card has an agent who will happily tell you more.</p>
+    </div>
+    <div class="exhibits" id="exhibits"></div>
+  </section>
+
+  <section class="block">
+    <div class="sh">
+      <div class="eyebrow">The résumé, briefly</div>
+      <h2>Mumbai → Dallas → Atlanta.</h2>
+    </div>
+    <div class="cv">
+      <div>
+        <h3>Work</h3>
+        <ul>
+          <li class="now"><b>AI Engineer<span class="pill">now</span></b><span>Tata Consultancy Services · Atlanta</span><span class="when">Feb 2024 to present</span></li>
+          <li><b>Software Configuration Engineer</b><span>Cognitus, an IBM company · Dallas</span><span class="when">Aug 2023 to Feb 2024</span></li>
+          <li><b>Software Engineer Intern</b><span>Cognitus, an IBM company · Dallas</span><span class="when">Jun 2022 to Feb 2023</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3>School</h3>
+        <ul>
+          <li class="now"><b>Executive Ph.D., Artificial Intelligence<span class="pill">4.0 GPA</span></b><span>University of the Cumberlands · part time</span><span class="when">Expected Dec 2029</span></li>
+          <li><b>M.S., Information Technology Management</b><span>UT Dallas · data science &amp; analytics · 3.73 GPA</span><span class="when">Aug 2023</span></li>        </ul>
+      </div>
+      <div>
+        <h3>Research &amp; service</h3>
+        <ul>
+          <li class="now"><b>Reviewer, NeurIPS 2026 workshops</b><span>Who Verifies the Agents? (Sydney) · Continual Learning for Enterprise AI Agents (Atlanta)</span></li>
+          <li><b>Automated Guided Vehicle Using Artificial Intelligence</b><span>First author · Journal of Information and Computational Science, Vol. 12</span></li>
+          <li><b>The AI That Acts</b><span>Author · 102-page plain-English guide to agentic AI</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Certs &amp; awards</h3>
+        <ul>
+          <li><b>Claude Certified Associate &amp; Developer</b><span>Anthropic · Foundations</span><span class="when">Sep and Oct 2026</span></li>
+          <li><b>MLOps Certification</b><span>Edureka</span><span class="when">Aug 2026</span></li>
+          <li><b>AWS Certified AI Practitioner</b><span>Amazon Web Services</span><span class="when">Dec 2025</span></li>
+          <li><b>Star of the Month · Dean's Excellence Scholar</b><span>TCS · UT Dallas</span></li>
+          <li><b>All India Rank 20</b><span>C-DAC Common Admission Test</span></li>
+          <li><b>All India Rank 27</b><span>Common Management Admission Test (CMAT)</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="bigq">Have an agent to build? <button type="button" id="contactq">Ask Atlas how to reach me.</button></div>
+    <div><h4>Email</h4><div class="mail"><code id="email">choksi.aditya89@gmail.com</code><button class="copy" type="button" id="copybtn">Copy</button></div></div>
+    <div><h4>Elsewhere</h4><p><a href="https://www.linkedin.com/in/aditya-choksi89" target="_blank" rel="noopener">LinkedIn ↗</a><br><a href="https://github.com/adityachoksi2512" target="_blank" rel="noopener">GitHub ↗</a></p></div>
+    <div><h4>Now</h4><p>AI Engineer at TCS<br>Ph.D. student in AI</p></div>  </footer>
+</div>
+
+<script>
+(function(){
+const AGENTS=[
+ {id:'dispatch',name:'Dispatch',role:'Orchestrator',quirk:'Routes every question. Has never answered one itself.',c:'--blue'},
+ {id:'rex',name:'Résumé Rex',role:'Career history',quirk:'Knows every job title. Refuses to say "synergy".',c:'--orange',
+  k:['work','job','tcs','tata','experience','career','company','companies','role','ibm','cognitus','intern','internship','pricefx','sap','vistex','employ','day job','award','awards','star of the month','enterprise'],
+  a:["Since Feb 2024 he's been an AI Engineer at Tata Consultancy Services in Atlanta. RAG over unstructured documents, ML classification pipelines, agentic workflows with tool calling, and FastAPI inference APIs in Docker. He picked up a Star of the Month award there too.",
+     "Before TCS: Cognitus, an IBM company, in Dallas. He started as an intern in Jun 2022 on the PriceFx pricing product and SAP Vistex testing, then became a Software Configuration Engineer, where automating repetitive work cut deployment times by 20%."]},
+ {id:'gradient',name:'Prof. Gradient',role:'Degrees & certs',quirk:'Descends slowly toward the answer.',c:'--lilac',
+  k:['phd','ph.d','degree','study','studies','school','education','college','university','cumberlands','utd','dallas','master','masters','bachelor','gpa','cert','certs','certified','certification','certifications','student','scholar','rank','cmat','c-dac','exam'],
+  a:["Right now: an Executive Ph.D. in AI at University of the Cumberlands, part time, expected Dec 2029, with a 4.0 so far. Before that, an MS in IT Management (data science and analytics) from UT Dallas in Aug 2023, with a 3.73 and a Dean's Excellence Scholar award.",
+     "Certifications, oldest first: AWS Certified AI Practitioner (Dec 2025), Edureka MLOps (Aug 2026), Claude Certified Developer, Foundations (Sep 2026) and Claude Certified Associate, Foundations (Oct 2026). Also All India Rank 20 on the C-DAC entrance test and 27 on CMAT."]},
+ {id:'inkwell',name:'Inkwell',role:'The book',quirk:'Speaks only in plain English.',c:'--pink',
+  k:['book','write','wrote','writing','author','acts','gumroad','kdp','ebook','guide'],
+  a:["He wrote The AI That Acts: A Plain-English Guide to Agentic AI. 102 pages on how agents plan, use tools and remember, written for people who have never touched code.",
+     "It comes loaded: a 35-term glossary, 50 ready-to-use prompts, 8 prompt recipes and a 30-day adoption plan. He even typeset it himself in Python with ReportLab, because of course he did."]},
+ {id:'pete',name:'Pipeline Pete',role:'MLOps & stack',quirk:'Will containerize your lunch.',c:'--mint',
+  k:['mlops','llmops','pipeline','kubernetes','k8s','docker','mlflow','dvc','deploy','deployment','grafana','dynatrace','devops','production','stack','skills','tools','python','java','tech','capstone','monitoring','evaluation','pytorch','tensorflow','metrics'],
+  a:["At TCS he covers the whole lifecycle: experiment tracking, model evaluation on precision, recall, F1 and ROC-AUC, CI/CD pipelines and production monitoring. MLOps for the classic models, LLMOps for the generative ones.",
+     "Daily kit: Python (plus Java, Groovy and SQL), PyTorch, TensorFlow, scikit-learn, FastAPI, Docker, GitHub Actions, PostgreSQL, with Dynatrace and Grafana keeping watch. His MLOps capstone added DVC, MLflow and Kubernetes on EC2 to the mix."]},
+ {id:'ada',name:'Agent Ada',role:'Agents & RAG',quirk:'Delegated writing this bio to a sub-agent.',c:'--yellow',
+  k:['agent','agents','multi-agent','adk','jobcraft','mcp','agentic','rag','retrieval','vector','embedding','embeddings','tool calling','function calling','autoresearch','research agent','llm apps','genai','gen ai','generative'],
+  a:["Agents are kind of his whole thing. At TCS he builds agentic apps with function calling and multi-agent orchestration, plus RAG pipelines with vector search tuned for retrieval relevance and grounded answers.",
+     "Favorite side build: AutoResearch Agent. It splits a question into sub-questions, searches the web live, reads the sources and writes a fully cited report. A depth dial trades thoroughness for latency and API cost. There's also JobCraft AI, a multi-agent job-application assistant on Google ADK."]},
+ {id:'radar',name:'Radar',role:'ResumeRadar',quirk:'Scores your question. Deterministically.',c:'--blue',
+  k:['resume','resumeradar','screening','hiring','recruit','recruiting','shortlist','score','scoring'],
+  a:["ResumeRadar takes a job description and returns a ranked shortlist. ETL, agents, models and the API live in separate layers so each can be tested alone, and Docker plus parallel processing keeps big batches quick.",
+     "An LLM reads the job description, but a deterministic weighted scorer does the ranking. So when a recruiter asks why someone came third, there's an actual answer."]},
+ {id:'cloudy',name:'Cloudy',role:'AWS & GCP',quirk:'Forecast: 100% chance of Terraform.',c:'--lilac',
+  k:['gcp','google cloud','cloud','aws','lambda','s3','rds','bigquery','vertex','terraform','dataform','jobmarket','infra','infrastructure','etl','data engineering','postgres','postgresql'],
+  a:["AWS side: Lambda, S3 and RDS in practice, plus the AWS Certified AI Practitioner badge since Dec 2025. Data side: ETL, event-driven pipelines and PostgreSQL query tuning.",
+     "GCP side: jobmarket-intelligence-platform, a three-project monorepo with BigQuery, Dataform and Terraform for data, Vertex Pipelines for training, and an ADK agent service on top."]},
+ {id:'petri',name:'Petri',role:'Side-project lab',quirk:'Grows experiments. Some grow back.',c:'--mint',
+  k:['civilization','civsim','simulation','sim','evolve','evolution','side project','side projects','weird','weirdest','fun','neural','experiment','hobby','food','restaurant','ordering','voice','seoul','bike'],
+  a:["My favorite exhibit: a civilization of AI agents left alone to see what they become. Evolutionary neural-net agents, not LLMs, with a Python engine and a browser viewer. Total budget for the whole society: ten dollars.",
+     "Also in the lab: Food AI, a chatty restaurant ordering assistant. Streaming replies, voice input, dietary filters, a live cart, loyalty points and printable receipts. Built on the Claude API and Flask.",
+     "And from UT Dallas coursework: Seoul Bike Demand Prediction. SVMs, decision trees, AdaBoost, kNN and neural nets compared on the same data, with a proper look at bias versus variance."]},
+ {id:'referee',name:'Referee',role:'Papers & peer review',quirk:'Reviewer 2, but nice about it.',c:'--orange',
+  k:['paper','papers','publication','publications','publish','published','journal','neurips','review','reviewer','reviewing','agv','guided vehicle','research','academic','conference'],
+  a:["He's a reviewer for two NeurIPS 2026 workshops: Who Verifies the Agents?, on reliable agent development, and Continual Learning for Enterprise AI Agents.",
+     "First-author paper: Automated Guided Vehicle Using Artificial Intelligence, in the Journal of Information and Computational Science. A survey of AGV navigation, dispatching and control, with AI research directions for logistics."]},
+ {id:'atlas',name:'Atlas',role:'Where & contact',quirk:'Mumbai to Dallas to Atlanta, every stop logged.',c:'--yellow',
+  k:['where','location','atlanta','mumbai','from','live','lives','based','timezone','india','georgia','contact','reach','email','hire','github','linkedin','connect','available','touch'],
+  a:["Started in Mumbai, studied in Dallas, based in Atlanta. Runs on Eastern time.",
+     "Email: choksi.aditya89@gmail.com. LinkedIn: aditya-choksi89. GitHub: adityachoksi2512. He reads all three, allegedly in that order."]},
+ {id:'critic',name:'The Critic',role:'Fact-checker',quirk:'Deletes adjectives for sport.',c:'--pink'}
+];
+const BY=Object.fromEntries(AGENTS.map(a=>[a.id,a]));
+const STAMPS=["Fact-checked ✓ against his résumé","Verified ✓ no embellishment found","Checked ✓ Pete tried to add 'rockstar'. Deleted.","Approved ✓ zero hallucinations, mildly disappointing","Stamped ✓ every claim has a source"];
+const EXHIBITS=[
+ {tag:'Agent · GitHub',t:'AutoResearch Agent',d:'Breaks a question into sub-questions, searches live, reads the sources and writes a fully cited report. A depth dial trades thoroughness for cost.',s:['Claude API','Streamlit','Python'],q:'Tell me about AutoResearch Agent',who:'ada',n:1,feat:true},
+ {tag:'ML pipeline · GitHub',t:'ResumeRadar',d:'Feed it a job description, get a ranked shortlist. Modular layers, Docker, and parallel processing for big batches.',s:['Python','Docker','LLM APIs'],q:'How does ResumeRadar work?',who:'radar',n:0},
+ {tag:'Conversational · GitHub',t:'Food AI',d:'A restaurant ordering assistant with streaming replies, voice input, dietary filters and a live order tracker.',s:['Claude API','Flask','SSE'],q:'Tell me about Food AI',who:'petri',n:1},
+ {tag:'Book · self-published',t:'The AI That Acts',d:'102 pages on agentic AI for people who don\'t code, with 50 prompts and a 30-day adoption plan.',s:['Writing','Agentic AI'],q:'Tell me about the book',who:'inkwell',n:0},
+ {tag:'Research · evolving',t:'Agent Civilization',d:'Neural agents left alone to evolve in a simulated world. For a paper, for the portfolio, and out of pure curiosity.',s:['Python','Evolution','Browser viewer'],q:'Weirdest side project?',who:'petri',n:0},
+ {tag:'Classic ML · UT Dallas',t:'Seoul Bike Demand',d:'A bake-off of supervised models on bike-share data, from SVM kernels to pruned trees, with the bias-variance tradeoff laid bare.',s:['scikit-learn','Python','Jupyter'],q:'Tell me about Seoul Bike',who:'petri',n:2}
+];
+
+/* ---------- faces ---------- */
+function face(a,i,cls){
+  const d=document.createElement('div');d.className=cls||('face s'+(i%4));
+  d.style.background='var('+a.c+')';
+  const bd=(Math.random()*4).toFixed(2)+'s';
+  d.innerHTML='<div class="eyes"><div class="eye" style="--bd:'+bd+'"><div class="pupil"></div></div><div class="eye" style="--bd:'+bd+'"><div class="pupil"></div></div></div><div class="mouth"></div>';
+  return d;
+}
+const crew=document.getElementById('crew');
+AGENTS.forEach((a,i)=>{
+  const b=document.createElement('button');b.type='button';b.className='agent';b.id='ag-'+a.id;
+  b.appendChild(face(a,i));
+  b.insertAdjacentHTML('beforeend','<div class="nm">'+a.name+'</div><div class="rl">'+a.role+'</div><div class="qk">'+a.quirk+'</div><div class="st">idle</div>');
+  b.addEventListener('click',()=>{
+    if(a.id==='dispatch')return ask('How does this site work?');
+    if(a.id==='critic')return ask('What does the Critic do?');
+    ask('Tell me about '+a.role.toLowerCase(),a.id);
+  });
+  crew.appendChild(b);
+});
+
+/* eyes follow the pointer */
+let px=innerWidth/2,py=innerHeight/3,raf=0;
+function look(){
+  raf=0;
+  document.querySelectorAll('.eye').forEach(e=>{
+    const r=e.getBoundingClientRect();if(!r.width)return;
+    const dx=px-(r.left+r.width/2),dy=py-(r.top+r.height/2);
+    const m=Math.hypot(dx,dy)||1,lim=r.width*0.22;
+    e.firstChild.style.transform='translate('+(dx/m*Math.min(lim,m/30)).toFixed(1)+'px,'+(dy/m*Math.min(lim,m/30)).toFixed(1)+'px)';
+  });
+}
+function onPoint(e){px=e.clientX;py=e.clientY;if(!raf)raf=requestAnimationFrame(look)}
+addEventListener('pointermove',onPoint);addEventListener('pointerdown',onPoint);
+addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(look)},{passive:true});
+setTimeout(look,300);
+
+/* ---------- exhibits ---------- */
+const ex=document.getElementById('exhibits');
+EXHIBITS.forEach(x=>{
+  const el=document.createElement('article');el.className='ex'+(x.feat?' feat':'');
+  el.innerHTML='<div class="tag">'+x.tag+'</div><h3>'+x.t+'</h3><p>'+x.d+'</p><div class="stack">'+x.s.map(s=>'<span>'+s+'</span>').join('')+'</div>';
+  const btn=document.createElement('button');btn.type='button';btn.className='askbtn';btn.textContent='Ask '+BY[x.who].name+' about it ↑';
+  btn.addEventListener('click',()=>{document.getElementById('askform').scrollIntoView({behavior:'smooth',block:'start'});ask(x.q,x.who,x.n)});
+  el.appendChild(btn);ex.appendChild(el);
+});
+const track=document.getElementById('track');
+const tick=['RAG in production','NeurIPS 2026 workshop reviewer','Ph.D. in AI · 4.0 so far','Claude certified, twice','102-page book shipped','civilization evolving','$0.00 LLM spend on this page','Atlanta · Eastern time'];
+track.innerHTML=tick.concat(tick).map(t=>'<span>'+t+'</span>').join('');
+
+/* ---------- chat ---------- */
+const log=document.getElementById('log');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const sleep=ms=>new Promise(r=>setTimeout(r,reduce?0:ms));
+function scrollLog(){log.scrollTop=log.scrollHeight}
+function addUser(t){const m=document.createElement('div');m.className='msg user';m.innerHTML='<div class="text"></div>';m.firstChild.textContent=t;log.appendChild(m);scrollLog()}
+function addAgentMsg(id){
+  const a=BY[id],i=AGENTS.indexOf(a);
+  const m=document.createElement('div');m.className='msg';
+  m.appendChild(face(a,i,'mini'));
+  m.insertAdjacentHTML('beforeend','<div class="body"><div class="who">'+a.name+' · '+a.role.toLowerCase()+'</div><div class="text"><span class="dots"><i></i><i></i><i></i></span></div></div>');
+  log.appendChild(m);scrollLog();return m;
+}
+function addRoute(html){const r=document.createElement('div');r.className='route';r.innerHTML=html;log.appendChild(r);scrollLog()}
+function addStamp(t){const s=document.createElement('div');s.className='stamp pop';s.textContent=t;log.appendChild(s);scrollLog()}
+function setState(id,on,label){const c=document.getElementById('ag-'+id);if(!c)return;c.classList.toggle('active',on);c.classList.toggle('talking',on);c.querySelector('.st').textContent=label||(on?'answering':'idle')}
+async function typeInto(el,text){
+  el.textContent='';
+  if(reduce){el.textContent=text;scrollLog();return}
+  for(let i=0;i<text.length;i+=3){el.textContent=text.slice(0,i+3);if(i%30===0)scrollLog();await sleep(11)}
+  scrollLog();
+}
+async function speak(id,text){
+  setState(id,true,'thinking');const m=addAgentMsg(id);m.classList.add('talking');
+  await sleep(550);setState(id,true,'answering');
+  await typeInto(m.querySelector('.text'),text);
+  m.classList.remove('talking');setState(id,false,'answered');
+}
+
+const rot={};
+function pick(a){rot[a.id]=(rot[a.id]||0);const t=a.a[rot[a.id]%a.a.length];rot[a.id]++;return t}
+function has(q,k){return /[ .\-]/.test(k)?q.includes(k):new RegExp('\\b'+k+'\\b').test(q)}
+function route(q){
+  q=q.toLowerCase();
+  if(/\b(llm|gpt|chatgpt|tokens?|are you (real|ai|human|a bot))\b|this site|how does (this|the) site|how .*site work/.test(q))return{meta:'site'};
+  if(/\bcritic\b/.test(q))return{meta:'critic'};
+  if(/^\s*(hi|hello|hey|yo|sup|namaste|hola)\b/.test(q))return{meta:'hi'};
+  if(/\b(joke|funny|laugh)\b/.test(q))return{meta:'joke'};
+  if(/\b(who is|who's|about him|summary|overview|what does he (actually )?(do|build))\b/.test(q)&&!/book|tcs|phd/.test(q))return{ids:['rex','ada']};
+  const scored=AGENTS.filter(a=>a.k).map(a=>({id:a.id,s:a.k.reduce((n,k)=>n+(has(q,k)?1:0),0)})).filter(x=>x.s>0).sort((x,y)=>y.s-x.s);
+  if(!scored.length)return{ids:[]};
+  const ids=[scored[0].id];if(scored[1]&&scored[1].s>=scored[0].s)ids.push(scored[1].id);
+  return{ids};
+}
+
+let busy=false,count=1,checked=false;const queue=[];
+const input=document.getElementById('q'),btn=document.getElementById('askbtn');
+function ask(q,forceId,n){if(!q||!q.trim())return;queue.push([q.trim(),forceId,n]);if(!busy)drain()}
+async function drain(){
+  busy=true;btn.disabled=true;
+  while(queue.length){const [q,f,n]=queue.shift();await handle(q,f,n)}
+  busy=false;btn.disabled=false;
+}
+async function handle(q,forceId,n){
+  addUser(q);setState('dispatch',true,'routing');await sleep(500);
+  const r=forceId?{ids:[forceId]}:route(q);
+  if(r.meta){
+    setState('dispatch',false,'idle');
+    if(r.meta==='site'){addRoute('routing to <span>Dispatch</span> (meta question)');await speak('dispatch',"Honest answer: no LLM here. We're twelve characters and a lot of if-statements, answering only from his résumé and notes. Zero tokens burned. He's saving the AI budget for the civilization sim.");}
+    if(r.meta==='critic'){addRoute('routing to <span>The Critic</span>');await speak('critic',"I read every answer before you do. If a claim isn't in his résumé or notes, it doesn't ship. I've deleted 'passionate' four hundred times.");}
+    if(r.meta==='hi'){addRoute('routing to <span>Dispatch</span>');await speak('dispatch',"Hey! Twelve of us, one Aditya. Ask about his work at TCS, his Ph.D., the book, his agents, or the strange little civilization he's raising.");}
+    if(r.meta==='joke'){addRoute('routing to <span>Petri</span>');await speak('petri',"Why did the agent refuse to leave the simulation? It finally found a reward function that loved it back.");addStamp('Critic: technically a joke ✓');}
+    return done();
+  }
+  if(!r.ids.length){
+    addRoute('routing to <span>all 10 specialists</span> … 10 shrugs');setState('dispatch',false,'idle');
+    await speak('critic',"Nobody had a source for that, so nobody answered. That's the house rule. Try his work, the Ph.D., the book, his agents, his research, or how to reach him.");
+    return done();
+  }
+  addRoute('routing to '+r.ids.map(i=>'<span>'+BY[i].name+'</span>').join(' + '));
+  setState('dispatch',false,'idle');
+  for(const id of r.ids){const a=BY[id];await speak(id,(n!==undefined&&forceId===id)?a.a[n]:pick(a))}
+  setState('critic',true,'checking');await sleep(450);setState('critic',false,'idle');
+  addStamp(STAMPS[Math.floor(Math.random()*STAMPS.length)]);
+  done();
+}
+function done(){
+  count++;document.getElementById('s-q').textContent=count;
+  if(count===4&&!checked){checked=true;humanCheck()}
+}
+function humanCheck(){
+  const c=document.createElement('div');c.className='check';
+  c.innerHTML='<p><b>Quick human check.</b> Three questions in. Which of these is <i>not</i> a real ML term?</p><div class="row"></div>';
+  const row=c.querySelector('.row');
+  ['Gradient descent','Dropout','Vibe normalization'].forEach(o=>{
+    const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=o;
+    b.addEventListener('click',async()=>{
+      c.remove();
+      await speak('critic',o==='Vibe normalization'?"Correct. Give it six months and someone will publish it anyway. Carry on, human.":"Wrong, but confidently wrong, which is very human. You pass. Carry on.");
+    });
+    row.appendChild(b);
+  });
+  log.appendChild(c);scrollLog();
+}
+
+document.getElementById('askform').addEventListener('submit',e=>{e.preventDefault();const v=input.value;input.value='';ask(v)});
+document.getElementById('chips').addEventListener('click',e=>{
+  const b=e.target.closest('.chip');if(!b)return;
+  if(b.hasAttribute('data-tour')){['Who is Aditya?','Tell me about the book','Any research or papers?'].forEach(q=>ask(q));return}
+  ask(b.textContent);
+});
+document.getElementById('contactq').addEventListener('click',()=>{document.getElementById('askform').scrollIntoView({behavior:'smooth'});ask('How do I reach him?','atlas',1)});
+document.getElementById('copybtn').addEventListener('click',e=>{
+  const b=e.currentTarget,t=document.getElementById('email').textContent;
+  const ok=()=>{b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1600)};
+  const fallback=()=>{const r=document.createRange();r.selectNodeContents(document.getElementById('email'));const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selected';setTimeout(()=>b.textContent='Copy',1600)};
+  try{navigator.clipboard.writeText(t).then(ok,fallback)}catch(err){fallback()}
+});
+
+/* seeded example so the log is never empty */
+(function seed(){
+  const r=document.createElement('div');r.className='msg';r.appendChild(face(BY.dispatch,0,'mini'));
+  r.insertAdjacentHTML('beforeend','<div class="body"><div class="who">Dispatch · orchestrator</div><div class="text">Welcome to the floor. Here\'s one we answered earlier. Ask your own above.</div></div>');
+  log.appendChild(r);
+  addUser('What does he actually build?');
+  addRoute('routing to <span>Agent Ada</span>');
+  const m=addAgentMsg('ada');m.querySelector('.text').textContent="AI that does real work: RAG and agentic workflows at TCS, AutoResearch Agent and ResumeRadar on the side, and a 102-page book explaining it all to people who don't code.";
+  addStamp('Fact-checked ✓ against his résumé');
+  setState('ada',false,'answered');
+})();
+
+/* timers */
+const t0=Date.now();
+setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);document.getElementById('s-time').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')},1000);})();
+</script>
+
+</body>
+</html>
