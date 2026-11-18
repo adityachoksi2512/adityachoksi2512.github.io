@@ -85,6 +85,9 @@ h1 .q{display:inline-block;transform-origin:50% 90%;animation:wobble 3.2s ease-i
 .stamp{align-self:flex-start;margin-left:40px;font-family:var(--f-mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--pink);border:1.5px solid var(--pink);border-radius:5px;padding:3px 8px;transform:rotate(-2deg)}
 .stamp.pop{animation:stampin .35s cubic-bezier(.3,1.6,.5,1)}
 @keyframes stampin{from{transform:scale(1.8) rotate(-8deg);opacity:0}}
+.follow{margin-left:40px;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.follow .lbl{font-family:var(--f-mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-right:2px}
+.follow .chip{font-size:12.5px;padding:4px 10px}
 .dots{display:inline-flex;gap:4px}
 .dots i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:bob 1s infinite}
 .dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
@@ -198,7 +201,7 @@ footer p{margin:0}
     <div class="console">
       <form class="ask" id="askform" autocomplete="off">
         <label for="q" class="sr">Ask the crew</label>
-        <input id="q" name="q" placeholder="Ask the crew anything about Aditya…" maxlength="160">
+        <input id="q" name="q" placeholder="Ask about his work, research, book, projects…" maxlength="160">
         <button id="askbtn" type="submit">Ask ↵</button>
       </form>
       <div class="chips" id="chips">
@@ -207,7 +210,7 @@ footer p{margin:0}
         <button class="chip" type="button">Show me the agent stuff</button>
         <button class="chip" type="button">Tell me about the book</button>
         <button class="chip" type="button">Any research or papers?</button>
-        <button class="chip" type="button">Weirdest side project?</button>
+        <button class="chip" type="button">Surprise me</button>
         <button class="chip" type="button">Is this site using an LLM?</button>
       </div>
       <div class="log" id="log" aria-live="polite"></div>
@@ -265,7 +268,8 @@ footer p{margin:0}
         <h3>School</h3>
         <ul>
           <li class="now"><b>Executive Ph.D., Artificial Intelligence<span class="pill">4.0 GPA</span></b><span>University of the Cumberlands · part time</span><span class="when">Expected Dec 2029</span></li>
-          <li><b>M.S., Information Technology Management</b><span>UT Dallas · data science &amp; analytics · 3.73 GPA</span><span class="when">Aug 2023</span></li>        </ul>
+          <li><b>M.S., Information Technology Management</b><span>UT Dallas · data science &amp; analytics · 3.73 GPA</span><span class="when">Aug 2023</span></li>
+        </ul>
       </div>
       <div>
         <h3>Research &amp; service</h3>
@@ -293,58 +297,77 @@ footer p{margin:0}
     <div class="bigq">Have an agent to build? <button type="button" id="contactq">Ask Atlas how to reach me.</button></div>
     <div><h4>Email</h4><div class="mail"><code id="email">choksi.aditya89@gmail.com</code><button class="copy" type="button" id="copybtn">Copy</button></div></div>
     <div><h4>Elsewhere</h4><p><a href="https://www.linkedin.com/in/aditya-choksi89" target="_blank" rel="noopener">LinkedIn ↗</a><br><a href="https://github.com/adityachoksi2512" target="_blank" rel="noopener">GitHub ↗</a></p></div>
-    <div><h4>Now</h4><p>AI Engineer at TCS<br>Ph.D. student in AI</p></div>  </footer>
+    <div><h4>Now</h4><p>AI Engineer at TCS<br>Ph.D. student in AI</p></div>
+  </footer>
 </div>
 
 <script>
 (function(){
+/* Each agent: routing keys (k) and answers (a). Each answer has its own keys so the closest one is picked. */
 const AGENTS=[
  {id:'dispatch',name:'Dispatch',role:'Orchestrator',quirk:'Routes every question. Has never answered one itself.',c:'--blue'},
  {id:'rex',name:'Résumé Rex',role:'Career history',quirk:'Knows every job title. Refuses to say "synergy".',c:'--orange',
-  k:['work','job','tcs','tata','experience','career','company','companies','role','ibm','cognitus','intern','internship','pricefx','sap','vistex','employ','day job','award','awards','star of the month','enterprise'],
-  a:["Since Feb 2024 he's been an AI Engineer at Tata Consultancy Services in Atlanta. RAG over unstructured documents, ML classification pipelines, agentic workflows with tool calling, and FastAPI inference APIs in Docker. He picked up a Star of the Month award there too.",
-     "Before TCS: Cognitus, an IBM company, in Dallas. He started as an intern in Jun 2022 on the PriceFx pricing product and SAP Vistex testing, then became a Software Configuration Engineer, where automating repetitive work cut deployment times by 20%."]},
+  k:['work','works','working','job','tcs','tata','experience','career','company','companies','role','position','title','ibm','cognitus','intern','internship','pricefx','sap','vistex','employ','employer','employed','day job','award','star of the month','enterprise','client','clients','team','responsibilities','achievement','accomplishment','impact','senior','junior','years'],
+  a:[{t:"Since Feb 2024 he's been an AI Engineer at Tata Consultancy Services in Atlanta. RAG over unstructured documents, ML classification pipelines, agentic workflows with tool calling, and FastAPI inference APIs in Docker. He picked up a Star of the Month award there too.",k:['tcs','tata','now','current','currently','day job','enterprise','award','star of the month','today']},
+     {t:"Before TCS: Cognitus, an IBM company, in Dallas. He started as an intern in Jun 2022 on the PriceFx pricing product and SAP Vistex testing, then became a Software Configuration Engineer, where automating repetitive work cut deployment times by 20%.",k:['ibm','cognitus','intern','internship','pricefx','sap','vistex','before','previous','previously','past','first job','earlier']}]},
  {id:'gradient',name:'Prof. Gradient',role:'Degrees & certs',quirk:'Descends slowly toward the answer.',c:'--lilac',
-  k:['phd','ph.d','degree','study','studies','school','education','college','university','cumberlands','utd','dallas','master','masters','bachelor','gpa','cert','certs','certified','certification','certifications','student','scholar','rank','cmat','c-dac','exam'],
-  a:["Right now: an Executive Ph.D. in AI at University of the Cumberlands, part time, expected Dec 2029, with a 4.0 so far. Before that, an MS in IT Management (data science and analytics) from UT Dallas in Aug 2023, with a 3.73 and a Dean's Excellence Scholar award.",
-     "Certifications, oldest first: AWS Certified AI Practitioner (Dec 2025), Edureka MLOps (Aug 2026), Claude Certified Developer, Foundations (Sep 2026) and Claude Certified Associate, Foundations (Oct 2026). Also All India Rank 20 on the C-DAC entrance test and 27 on CMAT."]},
+  k:['phd','ph.d','doctorate','doctoral','degree','study','studied','studying','school','education','college','university','cumberlands','utd','ut dallas','master','masters','ms','gpa','grade','grades','cert','certified','certification','credential','student','scholar','scholarship','rank','cmat','c-dac','exam','qualification','qualified','graduate','graduated','learn','learning'],
+  a:[{t:"Right now: an Executive Ph.D. in AI at University of the Cumberlands, part time, expected Dec 2029, with a 4.0 so far. Before that, an MS in IT Management (data science and analytics) from UT Dallas in Aug 2023, with a 3.73 and a Dean's Excellence Scholar award.",k:['phd','ph.d','doctorate','degree','education','school','college','university','gpa','master','masters','utd','ut dallas','cumberlands','study','studied','graduate','scholar']},
+     {t:"Certifications, oldest first: AWS Certified AI Practitioner (Dec 2025), Edureka MLOps (Aug 2026), Claude Certified Developer, Foundations (Sep 2026) and Claude Certified Associate, Foundations (Oct 2026). Also All India Rank 20 on the C-DAC entrance test and 27 on CMAT.",k:['cert','certified','certification','credential','aws','claude','anthropic','rank','exam','cmat','c-dac','edureka']}]},
  {id:'inkwell',name:'Inkwell',role:'The book',quirk:'Speaks only in plain English.',c:'--pink',
-  k:['book','write','wrote','writing','author','acts','gumroad','kdp','ebook','guide'],
-  a:["He wrote The AI That Acts: A Plain-English Guide to Agentic AI. 102 pages on how agents plan, use tools and remember, written for people who have never touched code.",
-     "It comes loaded: a 35-term glossary, 50 ready-to-use prompts, 8 prompt recipes and a 30-day adoption plan. He even typeset it himself in Python with ReportLab, because of course he did."]},
+  k:['book','books','write','wrote','writing','writer','author','acts','ai that acts','gumroad','kdp','ebook','guide','read','reading','blog','content','linkedin post'],
+  a:[{t:"He wrote The AI That Acts: A Plain-English Guide to Agentic AI. 102 pages on how agents plan, use tools and remember, written for people who have never touched code.",k:['book','about','what','author','wrote']},
+     {t:"It comes loaded: a 35-term glossary, 50 ready-to-use prompts, 8 prompt recipes and a 30-day adoption plan. He even typeset it himself in Python with ReportLab, because of course he did.",k:['glossary','prompt','prompts','recipe','recipes','inside','contents','reportlab','typeset','plan']}]},
  {id:'pete',name:'Pipeline Pete',role:'MLOps & stack',quirk:'Will containerize your lunch.',c:'--mint',
-  k:['mlops','llmops','pipeline','kubernetes','k8s','docker','mlflow','dvc','deploy','deployment','grafana','dynatrace','devops','production','stack','skills','tools','python','java','tech','capstone','monitoring','evaluation','pytorch','tensorflow','metrics'],
-  a:["At TCS he covers the whole lifecycle: experiment tracking, model evaluation on precision, recall, F1 and ROC-AUC, CI/CD pipelines and production monitoring. MLOps for the classic models, LLMOps for the generative ones.",
-     "Daily kit: Python (plus Java, Groovy and SQL), PyTorch, TensorFlow, scikit-learn, FastAPI, Docker, GitHub Actions, PostgreSQL, with Dynatrace and Grafana keeping watch. His MLOps capstone added DVC, MLflow and Kubernetes on EC2 to the mix."]},
+  k:['mlops','llmops','ops','pipeline','pipelines','kubernetes','k8s','docker','container','mlflow','dvc','deploy','deployment','deploying','grafana','dynatrace','devops','production','stack','skill','skills','tool','tools','python','java','groovy','sql','tech','technology','technologies','language','languages','framework','frameworks','capstone','monitoring','evaluation','evaluate','pytorch','tensorflow','scikit','sklearn','metrics','ci','cicd','ci/cd','fastapi','flask','streamlit','machine learning','ml','model','models','classification','api'],
+  a:[{t:"At TCS he covers the whole lifecycle: experiment tracking, model evaluation on precision, recall, F1 and ROC-AUC, CI/CD pipelines and production monitoring. MLOps for the classic models, LLMOps for the generative ones.",k:['mlops','llmops','ops','lifecycle','evaluation','evaluate','monitoring','production','metrics','deploy','deployment','pipeline','pipelines','model','models','classification','ml','machine learning']},
+     {t:"Daily kit: Python (plus Java, Groovy and SQL), PyTorch, TensorFlow, scikit-learn, FastAPI, Docker, GitHub Actions, PostgreSQL, with Dynatrace and Grafana keeping watch. His MLOps capstone added DVC, MLflow and Kubernetes on EC2 to the mix.",k:['stack','skill','skills','tool','tools','language','languages','python','java','groovy','sql','tech','technology','technologies','framework','frameworks','pytorch','tensorflow','capstone','kubernetes','docker','fastapi']}]},
  {id:'ada',name:'Agent Ada',role:'Agents & RAG',quirk:'Delegated writing this bio to a sub-agent.',c:'--yellow',
-  k:['agent','agents','multi-agent','adk','jobcraft','mcp','agentic','rag','retrieval','vector','embedding','embeddings','tool calling','function calling','autoresearch','research agent','llm apps','genai','gen ai','generative'],
-  a:["Agents are kind of his whole thing. At TCS he builds agentic apps with function calling and multi-agent orchestration, plus RAG pipelines with vector search tuned for retrieval relevance and grounded answers.",
-     "Favorite side build: AutoResearch Agent. It splits a question into sub-questions, searches the web live, reads the sources and writes a fully cited report. A depth dial trades thoroughness for latency and API cost. There's also JobCraft AI, a multi-agent job-application assistant on Google ADK."]},
+  k:['agent','agents','agentic','multi-agent','adk','jobcraft','mcp','rag','retrieval','vector','vectors','embedding','embeddings','tool calling','function calling','autoresearch','research agent','llm','llms','genai','gen ai','generative','chatbot','chatbots','prompt engineering','langchain','orchestration','autonomous','automation','automate','ai'],
+  a:[{t:"Agents are kind of his whole thing. At TCS he builds agentic apps with function calling and multi-agent orchestration, plus RAG pipelines with vector search tuned for retrieval relevance and grounded answers.",k:['rag','retrieval','vector','embedding','embeddings','tcs','work','enterprise','function calling','tool calling','multi-agent','orchestration','automation','automate']},
+     {t:"Favorite side build: AutoResearch Agent. It splits a question into sub-questions, searches the web live, reads the sources and writes a fully cited report. A depth dial trades thoroughness for latency and API cost. There's also JobCraft AI, a multi-agent job-application assistant on Google ADK.",k:['autoresearch','research agent','side','jobcraft','adk','project','projects','build','built','github']}]},
  {id:'radar',name:'Radar',role:'ResumeRadar',quirk:'Scores your question. Deterministically.',c:'--blue',
-  k:['resume','resumeradar','screening','hiring','recruit','recruiting','shortlist','score','scoring'],
-  a:["ResumeRadar takes a job description and returns a ranked shortlist. ETL, agents, models and the API live in separate layers so each can be tested alone, and Docker plus parallel processing keeps big batches quick.",
-     "An LLM reads the job description, but a deterministic weighted scorer does the ranking. So when a recruiter asks why someone came third, there's an actual answer."]},
+  k:['resume','resumes','resumeradar','screening','screen','hiring','recruit','recruiter','recruiting','shortlist','candidate','candidates','score','scoring','rank','ranking'],
+  a:[{t:"ResumeRadar takes a job description and returns a ranked shortlist. ETL, agents, models and the API live in separate layers so each can be tested alone, and Docker plus parallel processing keeps big batches quick.",k:['how','work','works','architecture','built','docker','batch','layers']},
+     {t:"An LLM reads the job description, but a deterministic weighted scorer does the ranking. So when a recruiter asks why someone came third, there's an actual answer.",k:['why','score','scoring','rank','ranking','deterministic','explain','fair']}]},
  {id:'cloudy',name:'Cloudy',role:'AWS & GCP',quirk:'Forecast: 100% chance of Terraform.',c:'--lilac',
-  k:['gcp','google cloud','cloud','aws','lambda','s3','rds','bigquery','vertex','terraform','dataform','jobmarket','infra','infrastructure','etl','data engineering','postgres','postgresql'],
-  a:["AWS side: Lambda, S3 and RDS in practice, plus the AWS Certified AI Practitioner badge since Dec 2025. Data side: ETL, event-driven pipelines and PostgreSQL query tuning.",
-     "GCP side: jobmarket-intelligence-platform, a three-project monorepo with BigQuery, Dataform and Terraform for data, Vertex Pipelines for training, and an ADK agent service on top."]},
+  k:['gcp','google cloud','cloud','clouds','aws','amazon','lambda','s3','rds','ec2','bigquery','vertex','terraform','dataform','jobmarket','infra','infrastructure','etl','data engineering','data engineer','postgres','postgresql','database','databases','data','serverless','azure'],
+  a:[{t:"AWS side: Lambda, S3 and RDS in practice, plus the AWS Certified AI Practitioner badge since Dec 2025. Data side: ETL, event-driven pipelines and PostgreSQL query tuning.",k:['aws','amazon','lambda','s3','rds','ec2','etl','data','database','databases','postgres','postgresql','serverless']},
+     {t:"GCP side: jobmarket-intelligence-platform, a three-project monorepo with BigQuery, Dataform and Terraform for data, Vertex Pipelines for training, and an ADK agent service on top.",k:['gcp','google cloud','google','bigquery','vertex','terraform','dataform','jobmarket','monorepo']}]},
  {id:'petri',name:'Petri',role:'Side-project lab',quirk:'Grows experiments. Some grow back.',c:'--mint',
-  k:['civilization','civsim','simulation','sim','evolve','evolution','side project','side projects','weird','weirdest','fun','neural','experiment','hobby','food','restaurant','ordering','voice','seoul','bike'],
-  a:["My favorite exhibit: a civilization of AI agents left alone to see what they become. Evolutionary neural-net agents, not LLMs, with a Python engine and a browser viewer. Total budget for the whole society: ten dollars.",
-     "Also in the lab: Food AI, a chatty restaurant ordering assistant. Streaming replies, voice input, dietary filters, a live cart, loyalty points and printable receipts. Built on the Claude API and Flask.",
-     "And from UT Dallas coursework: Seoul Bike Demand Prediction. SVMs, decision trees, AdaBoost, kNN and neural nets compared on the same data, with a proper look at bias versus variance."]},
+  k:['civilization','civsim','simulation','sim','evolve','evolution','evolutionary','side project','side projects','weird','weirdest','fun','neural','experiment','experiments','hobby','hobbies','food','restaurant','ordering','order','voice','seoul','bike','coursework','portfolio','cool','interesting','favorite','free time','spare time','weekend'],
+  a:[{t:"My favorite exhibit: a civilization of AI agents left alone to see what they become. Evolutionary neural-net agents, not LLMs, with a Python engine and a browser viewer. Total budget for the whole society: ten dollars.",k:['civilization','civsim','simulation','sim','evolve','evolution','evolutionary','neural','weird','weirdest','fun','cool','interesting','favorite']},
+     {t:"Also in the lab: Food AI, a chatty restaurant ordering assistant. Streaming replies, voice input, dietary filters, a live cart, loyalty points and printable receipts. Built on the Claude API and Flask.",k:['food','restaurant','ordering','order','voice','waiter','menu']},
+     {t:"And from UT Dallas coursework: Seoul Bike Demand Prediction. SVMs, decision trees, AdaBoost, kNN and neural nets compared on the same data, with a proper look at bias versus variance.",k:['seoul','bike','coursework','svm','classic','regression']}]},
  {id:'referee',name:'Referee',role:'Papers & peer review',quirk:'Reviewer 2, but nice about it.',c:'--orange',
-  k:['paper','papers','publication','publications','publish','published','journal','neurips','review','reviewer','reviewing','agv','guided vehicle','research','academic','conference'],
-  a:["He's a reviewer for two NeurIPS 2026 workshops: Who Verifies the Agents?, on reliable agent development, and Continual Learning for Enterprise AI Agents.",
-     "First-author paper: Automated Guided Vehicle Using Artificial Intelligence, in the Journal of Information and Computational Science. A survey of AGV navigation, dispatching and control, with AI research directions for logistics."]},
+  k:['paper','papers','publication','publications','publish','published','journal','neurips','review','reviewer','reviewing','agv','guided vehicle','research','researcher','academic','academia','conference','conferences','science','scientific','thesis','dissertation','citation','citations'],
+  a:[{t:"He's a reviewer for two NeurIPS 2026 workshops: Who Verifies the Agents?, on reliable agent development, and Continual Learning for Enterprise AI Agents.",k:['neurips','review','reviewer','reviewing','conference','conferences','service']},
+     {t:"First-author paper: Automated Guided Vehicle Using Artificial Intelligence, in the Journal of Information and Computational Science. A survey of AGV navigation, dispatching and control, with AI research directions for logistics.",k:['paper','papers','publication','publications','publish','published','journal','agv','guided vehicle','author','citation']}]},
  {id:'atlas',name:'Atlas',role:'Where & contact',quirk:'Mumbai to Dallas to Atlanta, every stop logged.',c:'--yellow',
-  k:['where','location','atlanta','mumbai','from','live','lives','based','timezone','india','georgia','contact','reach','email','hire','github','linkedin','connect','available','touch'],
-  a:["Started in Mumbai, studied in Dallas, based in Atlanta. Runs on Eastern time.",
-     "Email: choksi.aditya89@gmail.com. LinkedIn: aditya-choksi89. GitHub: adityachoksi2512. He reads all three, allegedly in that order."]},
+  k:['where','location','located','atlanta','mumbai','from','live','lives','living','based','timezone','time zone','india','georgia','city','country','relocate','relocation','remote','contact','reach','email','mail','hire','hiring him','github','linkedin','connect','available','availability','touch','message','talk','call','meet','resume pdf','cv'],
+  a:[{t:"Started in Mumbai, studied in Dallas, based in Atlanta. Runs on Eastern time.",k:['where','location','located','atlanta','mumbai','from','live','lives','living','based','timezone','time zone','india','georgia','city','country']},
+     {t:"Email: choksi.aditya89@gmail.com. LinkedIn: aditya-choksi89. GitHub: adityachoksi2512. He reads all three, allegedly in that order.",k:['contact','reach','email','mail','hire','github','linkedin','connect','available','availability','touch','message','talk','call','meet']}]},
  {id:'critic',name:'The Critic',role:'Fact-checker',quirk:'Deletes adjectives for sport.',c:'--pink'}
 ];
 const BY=Object.fromEntries(AGENTS.map(a=>[a.id,a]));
 const STAMPS=["Fact-checked ✓ against his résumé","Verified ✓ no embellishment found","Checked ✓ Pete tried to add 'rockstar'. Deleted.","Approved ✓ zero hallucinations, mildly disappointing","Stamped ✓ every claim has a source"];
+
+/* Fallback facts: used when nothing matches, so a visitor never hits a dead end. */
+const FACTS=[
+ {w:'rex',t:"At Cognitus he automated enough repetitive work to cut deployment times by 20%. He has opinions about doing things twice.",f:['What does he do at TCS?','What did he do at IBM?']},
+ {w:'gradient',t:"He's holding a 4.0 in his Ph.D. while working full time as an AI Engineer. Sleep schedule: under investigation.",f:['Where did he study?','Which certifications does he have?']},
+ {w:'gradient',t:"He ranked 20th in all of India on the C-DAC entrance exam, and 27th on CMAT. He also tests well against job descriptions.",f:['Which certifications does he have?','What does he do at TCS?']},
+ {w:'inkwell',t:"His book ships with 50 ready-to-use prompts and a 30-day plan for adopting agentic AI. For people who have never written a line of code.",f:['Tell me about the book','Show me the agent stuff']},
+ {w:'referee',t:"He reviews for a NeurIPS 2026 workshop literally titled Who Verifies the Agents? Which makes The Critic feel very seen.",f:['Any research or papers?','Show me the agent stuff']},
+ {w:'petri',t:"He's raising a civilization of AI agents on a total budget of ten dollars. The agents have not been told about the budget.",f:['Weirdest side project?','Tell me about Food AI']},
+ {w:'petri',t:"One of his side projects takes your restaurant order by voice and prints you a receipt. No tipping required.",f:['Tell me about Food AI','How does ResumeRadar work?']},
+ {w:'ada',t:"His AutoResearch Agent has a depth dial. Turn it up for more sources and a fuller report. Turn it down to protect the API bill.",f:['Show me the agent stuff','What is his tech stack?']},
+ {w:'radar',t:"ResumeRadar ranks candidates with a deterministic scorer, so every ranking can be explained. Recruiters find this suspiciously reasonable.",f:['How does ResumeRadar work?','What does he do at TCS?']},
+ {w:'gradient',t:"He picked up two Claude certifications from Anthropic one month apart. The crew is choosing not to make this weird.",f:['Which certifications does he have?','Is this site using an LLM?']}
+];
+const MISS_LINES=["Didn't catch that one. Here's something true instead.","No exact match for that, so here's a fact you didn't ask for.","Nobody had a precise answer, so we're improvising. Truthfully.","That one's outside our notes. Have a fun fact instead."];
+const SUGGEST=['What does he do at TCS?','Show me the agent stuff','Tell me about the book','Any research or papers?','Where did he study?','Which certifications does he have?','What is his tech stack?','How does ResumeRadar work?','Weirdest side project?','Tell me about Food AI','What did he do at IBM?','How do I reach him?','Surprise me'];
+
 const EXHIBITS=[
  {tag:'Agent · GitHub',t:'AutoResearch Agent',d:'Breaks a question into sub-questions, searches live, reads the sources and writes a fully cited report. A depth dial trades thoroughness for cost.',s:['Claude API','Streamlit','Python'],q:'Tell me about AutoResearch Agent',who:'ada',n:1,feat:true},
  {tag:'ML pipeline · GitHub',t:'ResumeRadar',d:'Feed it a job description, get a ranked shortlist. Modular layers, Docker, and parallel processing for big batches.',s:['Python','Docker','LLM APIs'],q:'How does ResumeRadar work?',who:'radar',n:0},
@@ -433,25 +456,62 @@ async function speak(id,text){
   m.classList.remove('talking');setState(id,false,'answered');
 }
 
-const rot={};
-function pick(a){rot[a.id]=(rot[a.id]||0);const t=a.a[rot[a.id]%a.a.length];rot[a.id]++;return t}
-function has(q,k){return /[ .\-]/.test(k)?q.includes(k):new RegExp('\\b'+k+'\\b').test(q)}
-function route(q){
-  q=q.toLowerCase();
-  if(/\b(llm|gpt|chatgpt|tokens?|are you (real|ai|human|a bot))\b|this site|how does (this|the) site|how .*site work/.test(q))return{meta:'site'};
-  if(/\bcritic\b/.test(q))return{meta:'critic'};
-  if(/^\s*(hi|hello|hey|yo|sup|namaste|hola)\b/.test(q))return{meta:'hi'};
-  if(/\b(joke|funny|laugh)\b/.test(q))return{meta:'joke'};
-  if(/\b(who is|who's|about him|summary|overview|what does he (actually )?(do|build))\b/.test(q)&&!/book|tcs|phd/.test(q))return{ids:['rex','ada']};
-  const scored=AGENTS.filter(a=>a.k).map(a=>({id:a.id,s:a.k.reduce((n,k)=>n+(has(q,k)?1:0),0)})).filter(x=>x.s>0).sort((x,y)=>y.s-x.s);
-  if(!scored.length)return{ids:[]};
-  const ids=[scored[0].id];if(scored[1]&&scored[1].s>=scored[0].s)ids.push(scored[1].id);
-  return{ids};
+/* follow-up chips so every answer leads somewhere */
+const asked=new Set();
+function addFollow(list){
+  const opts=(list||[]).filter(s=>!asked.has(s));
+  for(const s of SUGGEST){if(opts.length>=2)break;if(!asked.has(s)&&!opts.includes(s))opts.push(s)}
+  if(!opts.length)return;
+  const row=document.createElement('div');row.className='follow';
+  row.innerHTML='<span class="lbl">Next</span>';
+  opts.slice(0,2).forEach(s=>{
+    const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=s;
+    b.addEventListener('click',()=>{row.remove();ask(s)});row.appendChild(b);
+  });
+  log.appendChild(row);scrollLog();
 }
+function clearFollows(){log.querySelectorAll('.follow').forEach(r=>r.remove())}
+
+/* matching */
+function norm(q){return q.toLowerCase().replace(/[’']/g,"'").replace(/[^a-z0-9.\/\-' ]+/g,' ').replace(/\s+/g,' ').trim()}
+function esc(s){return s.replace(/[.*+?^${}()|[\]\\\/]/g,'\\$&')}
+function has(q,k){return /[ .\-\/]/.test(k)?q.includes(k):new RegExp('\\b'+esc(k)+'(s|es)?\\b').test(q)}
+const used={};
+function pickAnswer(a,q){
+  used[a.id]=used[a.id]||new Set();
+  const scored=a.a.map((x,i)=>({i,s:x.k.reduce((n,k)=>n+(has(q,k)?1:0),0)}));
+  const max=Math.max(...scored.map(x=>x.s));
+  let pool=scored.filter(x=>x.s===max).map(x=>x.i);
+  const fresh=pool.filter(i=>!used[a.id].has(i));
+  const pick=(fresh.length?fresh:pool)[0];
+  used[a.id].add(pick);if(used[a.id].size>=a.a.length)used[a.id].clear();
+  return a.a[pick].t;
+}
+const WEAK=new Set(['where','from','live','lives','living','work','works','working','ai','data','api','model','models','learn','learning','read','reading','order','rank','score','tool','tools','cool','fun','favorite','interesting','team','years','talk','message','call','meet','ml','llm','llms','automation','automate','build','content','skill','skills','tech','title','role','experience','evaluate','ops','research','science','author','review']);
+const FACTQ=/\b(random|something|anything|surprise|interesting|fact)\b/;
+const PERSONAL=/\b(salary|salaries|pay|paid|compensation|ctc|age|old|birthday|married|wife|husband|girlfriend|boyfriend|kids|children|family|religion|religious|politic|politics|political|vote|visa|green card|phone|number|address|weight|health)\b/;
+function route(raw){
+  const q=norm(raw);
+  if(!q)return{meta:'fact',q};
+  if(/\b(llm|gpt|chatgpt|tokens?|are you (real|ai|human|a bot)|is this (real|ai))\b|this site|how does (this|the) site|how .*site work/.test(q))return{meta:'site'};
+  if(/\bcritic\b/.test(q))return{meta:'critic'};
+  if(/^(hi|hello|hey|yo|sup|namaste|hola|good (morning|evening|afternoon))\b/.test(q))return{meta:'hi'};
+  if(/\b(joke|funny|laugh)\b/.test(q))return{meta:'joke'};
+  if(/\b(thanks|thank you|thx|cool|nice|awesome|great|wow)\b/.test(q)&&q.split(' ').length<=4)return{meta:'thanks'};
+  if(PERSONAL.test(q))return{meta:'personal'};
+  if(/\b(surprise me|fun fact)\b/.test(q))return{meta:'fact'};
+  if(/\b(who is|who's|whos|about him|about aditya|summary|overview|introduce|introduction|what does he (actually )?(do|build)|tell me about (him|aditya))\b/.test(q)&&!/book|tcs|phd/.test(q))return{ids:['rex','ada'],q,fixed:{rex:0,ada:1}};
+  const scored=AGENTS.filter(a=>a.k).map(a=>({id:a.id,s:a.k.reduce((n,k)=>n+(has(q,k)?(WEAK.has(k)?.5:1):0),0)})).filter(x=>x.s>0).sort((x,y)=>y.s-x.s);
+  if(!scored.length)return{meta:'fact',miss:!FACTQ.test(q)};
+  const ids=[scored[0].id];if(scored[1]&&scored[1].s>=scored[0].s)ids.push(scored[1].id);
+  return{ids,q};
+}
+let factOrder=FACTS.map((_,i)=>i).sort(()=>Math.random()-.5),factIdx=0;
+function nextFact(){if(factIdx>=factOrder.length){factIdx=0;factOrder.sort(()=>Math.random()-.5)}return FACTS[factOrder[factIdx++]]}
 
 let busy=false,count=1,checked=false;const queue=[];
 const input=document.getElementById('q'),btn=document.getElementById('askbtn');
-function ask(q,forceId,n){if(!q||!q.trim())return;queue.push([q.trim(),forceId,n]);if(!busy)drain()}
+function ask(q,forceId,n){if(!q||!q.trim())return;clearFollows();asked.add(q.trim());queue.push([q.trim(),forceId,n]);if(!busy)drain()}
 async function drain(){
   busy=true;btn.disabled=true;
   while(queue.length){const [q,f,n]=queue.shift();await handle(q,f,n)}
@@ -459,25 +519,31 @@ async function drain(){
 }
 async function handle(q,forceId,n){
   addUser(q);setState('dispatch',true,'routing');await sleep(500);
-  const r=forceId?{ids:[forceId]}:route(q);
+  const r=forceId?{ids:[forceId],q:norm(q)}:route(q);
   if(r.meta){
     setState('dispatch',false,'idle');
-    if(r.meta==='site'){addRoute('routing to <span>Dispatch</span> (meta question)');await speak('dispatch',"Honest answer: no LLM here. We're twelve characters and a lot of if-statements, answering only from his résumé and notes. Zero tokens burned. He's saving the AI budget for the civilization sim.");}
-    if(r.meta==='critic'){addRoute('routing to <span>The Critic</span>');await speak('critic',"I read every answer before you do. If a claim isn't in his résumé or notes, it doesn't ship. I've deleted 'passionate' four hundred times.");}
-    if(r.meta==='hi'){addRoute('routing to <span>Dispatch</span>');await speak('dispatch',"Hey! Twelve of us, one Aditya. Ask about his work at TCS, his Ph.D., the book, his agents, or the strange little civilization he's raising.");}
-    if(r.meta==='joke'){addRoute('routing to <span>Petri</span>');await speak('petri',"Why did the agent refuse to leave the simulation? It finally found a reward function that loved it back.");addStamp('Critic: technically a joke ✓');}
-    return done();
-  }
-  if(!r.ids.length){
-    addRoute('routing to <span>all 10 specialists</span> … 10 shrugs');setState('dispatch',false,'idle');
-    await speak('critic',"Nobody had a source for that, so nobody answered. That's the house rule. Try his work, the Ph.D., the book, his agents, his research, or how to reach him.");
+    if(r.meta==='site'){addRoute('routing to <span>Dispatch</span> (meta question)');await speak('dispatch',"Honest answer: no LLM here. We're twelve characters and a lot of if-statements, answering only from his résumé and notes. Zero tokens burned. Ask about his work and we'll do our best; ask about the weather and you'll get a fun fact.");addFollow(['Surprise me','Show me the agent stuff']);}
+    if(r.meta==='critic'){addRoute('routing to <span>The Critic</span>');await speak('critic',"I read every answer before you do. If a claim isn't in his résumé or notes, it doesn't ship. I've deleted 'passionate' four hundred times.");addFollow();}
+    if(r.meta==='hi'){addRoute('routing to <span>Dispatch</span>');await speak('dispatch',"Hey! Twelve of us, one Aditya. Ask about his work at TCS, his Ph.D., the book, his agents, or the strange little civilization he's raising.");addFollow(['What does he do at TCS?','Weirdest side project?']);}
+    if(r.meta==='thanks'){addRoute('routing to <span>Dispatch</span>');await speak('dispatch',"Anytime. The crew is unionized but very friendly. Want another one?");addFollow();}
+    if(r.meta==='joke'){addRoute('routing to <span>Petri</span>');await speak('petri',"Why did the agent refuse to leave the simulation? It finally found a reward function that loved it back.");addStamp('Critic: technically a joke ✓');addFollow(['Weirdest side project?']);}
+    if(r.meta==='personal'){addRoute('routing to <span>The Critic</span>');await speak('critic',"Off the record. This crew only covers his work, research and projects. For anything else, ask the man himself.");addFollow(['How do I reach him?','What does he do at TCS?']);}
+    if(r.meta==='fact'){
+      const f=nextFact();
+      addRoute(r.miss?'no exact match · <span>Dispatch</span> pulls a fact from <span>'+BY[f.w].name+'</span>':'routing to <span>'+BY[f.w].name+'</span> for a fun fact');
+      if(r.miss)await speak('dispatch',MISS_LINES[Math.floor(Math.random()*MISS_LINES.length)]);
+      await speak(f.w,f.t);
+      addStamp(STAMPS[Math.floor(Math.random()*STAMPS.length)]);
+      addFollow(f.f);
+    }
     return done();
   }
   addRoute('routing to '+r.ids.map(i=>'<span>'+BY[i].name+'</span>').join(' + '));
   setState('dispatch',false,'idle');
-  for(const id of r.ids){const a=BY[id];await speak(id,(n!==undefined&&forceId===id)?a.a[n]:pick(a))}
+  for(const id of r.ids){const a=BY[id];const fx=r.fixed&&r.fixed[id]!==undefined?r.fixed[id]:(n!==undefined&&forceId===id?n:undefined);await speak(id,fx!==undefined?a.a[fx].t:pickAnswer(a,r.q))}
   setState('critic',true,'checking');await sleep(450);setState('critic',false,'idle');
   addStamp(STAMPS[Math.floor(Math.random()*STAMPS.length)]);
+  addFollow();
   done();
 }
 function done(){
@@ -493,6 +559,7 @@ function humanCheck(){
     b.addEventListener('click',async()=>{
       c.remove();
       await speak('critic',o==='Vibe normalization'?"Correct. Give it six months and someone will publish it anyway. Carry on, human.":"Wrong, but confidently wrong, which is very human. You pass. Carry on.");
+      addFollow();
     });
     row.appendChild(b);
   });
@@ -523,11 +590,13 @@ document.getElementById('copybtn').addEventListener('click',e=>{
   const m=addAgentMsg('ada');m.querySelector('.text').textContent="AI that does real work: RAG and agentic workflows at TCS, AutoResearch Agent and ResumeRadar on the side, and a 102-page book explaining it all to people who don't code.";
   addStamp('Fact-checked ✓ against his résumé');
   setState('ada',false,'answered');
+  addFollow(['What does he do at TCS?','Surprise me']);
 })();
 
-/* timers */
+/* timer */
 const t0=Date.now();
-setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);document.getElementById('s-time').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')},1000);})();
+setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);document.getElementById('s-time').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')},1000);
+})();
 </script>
 
 </body>
